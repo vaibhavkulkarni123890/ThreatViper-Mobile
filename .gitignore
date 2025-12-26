@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+Quarantine/
+*.locked
+.vscode/
+.idea/
+venv/
+env/

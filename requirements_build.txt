@@ -1,0 +1,9 @@
+# Requirements for building the executable
+pyinstaller>=5.0
+flet>=0.21.0
+pymongo
+bcrypt
+certifi
+python-dotenv
+numpy>=1.21.0
+scikit-learn>=1.0.0

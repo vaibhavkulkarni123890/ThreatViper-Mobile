@@ -1,0 +1,50 @@
+CyberNova Security - Build Instructions
+=============================================
+
+OPTION 1: Quick Build (Recommended)
+-----------------------------------
+1. Double-click "build.bat" 
+2. Wait for the build to complete
+3. Find your executable in the "dist" folder
+
+OPTION 2: Manual Build
+---------------------
+1. Install build requirements:
+   pip install -r requirements_build.txt
+
+2. Run the build script:
+   python build_exe.py
+
+3. Or use PyInstaller directly:
+   pyinstaller --onefile --noconsole --name "CyberNova_Security" main.py
+
+OPTION 3: Advanced Build with Spec File
+---------------------------------------
+1. Run: python build_exe.py (this creates cybernova.spec)
+2. Customize cybernova.spec if needed
+3. Run: pyinstaller cybernova.spec
+
+OUTPUT
+------
+- Executable will be created in: dist/CyberNova_Security.exe
+- File size: Approximately 50-100 MB (includes Python runtime)
+- No Python installation required on target machines
+
+TROUBLESHOOTING
+--------------
+- If build fails, ensure all dependencies are installed
+- For "module not found" errors, add missing modules to hiddenimports in spec file
+- For icon issues, place an "icon.ico" file in the project directory
+- If executable is too large, consider using --exclude-module for unused packages
+
+DISTRIBUTION
+-----------
+The generated .exe file is completely standalone and can be distributed to users
+without requiring Python installation on their machines.
+
+TESTING
+-------
+1. Test the .exe on a machine without Python installed
+2. Verify all features work correctly
+3. Check that database files are created properly
+4. Test both online and offline modes
