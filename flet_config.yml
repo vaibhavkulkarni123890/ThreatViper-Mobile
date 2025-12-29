@@ -1,0 +1,13 @@
+project:
+  name: ThreatViper
+  product: ThreatViper Security
+  version: 1.0.0
+  build_number: 1
+  org: com.threatviper.security
+
+android:
+  package_name: com.threatviper.security
+  permissions:
+    - android.permission.READ_EXTERNAL_STORAGE
+    - android.permission.WRITE_EXTERNAL_STORAGE
+    - android.permission.INTERNET

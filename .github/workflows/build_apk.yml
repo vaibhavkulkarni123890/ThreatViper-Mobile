@@ -26,8 +26,7 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          # flet[android] is required for the build capabilities
-          pip install "flet[android]" pymongo bcrypt certifi python-dotenv yara-python pefile
+          pip install "flet[android]" pymongo bcrypt certifi python-dotenv pefile
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -39,14 +38,15 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # Leaving flutter-version empty defaults to latest stable
 
       - name: Accept Android Licenses
         run: yes | flutter doctor --android-licenses
 
       - name: Flet Build APK
         run: |
-          # Ensure Flet is in path and build APK
+          # Clean any previous build artifacts
+          rm -rf build/
+          # Build APK
           flet build apk --verbose
 
       - name: Upload APK Artifact
