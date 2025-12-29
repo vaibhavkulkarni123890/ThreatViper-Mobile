@@ -31,30 +31,35 @@ threat_engine = ThreatEngine()
 
 # Legal Text Const - UPDATED FOR COMMERCIAL
 TERMS_TEXT = """
-CYBERNOVA NETWORKS: COMMERCIAL LICENSE AGREEMENT
+THREATVIPER SECURITY: TERMS OF SERVICE
 
-1. GRANT OF LICENSE
-Subject to payment of the subscription fees (₹1,800 INR/Endpoint/Year), CyberNova grants you a license for internal business or personal security use.
+Welcome to ThreatViper! We are committed to protecting your digital life. 
+By using our services, you agree to the following simple terms:
 
-2. COMMERCIAL USAGE
-Authorized for commercial, enterprise, and educational environments.
+1. YOUR PROTECTION
+ThreatViper provides advanced security for your personal and business files. 
+Your subscription allows you to stay protected for a full year.
 
-3. SECURITY DISCLAIMER
-CyberNova Networks is a threat detection tool using Advanced Heuristics. No security software guarantees 100% detection.
-LIMITATION OF LIABILITY: Liability is capped at the subscription fee (₹1,800). We are not liable for incidental data loss.
+2. SECURITY HONESTY
+We use advanced technology to detect threats, but no system can be 100% perfect. 
+We recommend maintaining backups for your most precious data.
 
-4. DATA USAGE
-Scan logs are stored locally and optionally synced to secure cloud. No personal file contents are uploaded.
+3. YOUR PRIVACY
+Your trust is our priority. We only scan for threats locally. 
+No personal files or private contents are ever uploaded to our servers.
 
-5. PROHIBITED ACTIONS
-Reverse engineering or uses to develop malware are strictly prohibited.
+4. RESPONSIBLE USE
+We ask that you use ThreatViper for security purposes only. 
+Please do not attempt to bypass our protections or use our tools for harm.
+
+Thank you for choosing ThreatViper. Stay safe!
 """
 
 DISCLAIMER_MSG = "⚠️ Enterprise Heuristics Active. No security system is 100% fallback-proof."
 
 def main(page: ft.Page):
     # App Configuration
-    page.title = "CyberNova Networks" 
+    page.title = "ThreatViper Security" 
     page.theme_mode = ft.ThemeMode.DARK
     page.window_width = 400
     page.window_height = 800
@@ -87,7 +92,7 @@ def main(page: ft.Page):
                     content=ft.Column([
                         ft.Text(TERMS_TEXT, size=14, color="grey300"),
                         ft.Container(height=20),
-                        ft.ElevatedButton("Go Back", on_click=lambda _: page.views.pop() if len(page.views) > 1 else page.go("/register"))
+                        ft.ElevatedButton("Go Back", on_click=lambda _: page.go("/register"))
                     ], scroll=ft.ScrollMode.AUTO)
                 )
             ]
@@ -97,7 +102,7 @@ def main(page: ft.Page):
 
     def login_view():
         if "/login" in cached_views: return cached_views["/login"]
-        email_field = ft.TextField(label="Username", prefix_icon="person", border_radius=10) # ADAPTATION: Label changed to Username
+        email_field = ft.TextField(label="Email Address", prefix_icon="email", border_radius=10)
         pass_field = ft.TextField(label="Password", prefix_icon="lock", password=True, can_reveal_password=True, border_radius=10)
         
         def do_login(e):
@@ -127,9 +132,9 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=20,
                         controls=[
-                            ft.Icon(ft.Icons.SECURITY, size=80, color="cyan400"), # ADAPTATION: Use Icon instead of missing image
-                            ft.Text("CYBERNOVA", size=30, weight="bold", color="white"),
-                            ft.Text("NETWORKS", size=20, weight="w300", color="cyan400"),
+                            ft.Image(src="generated-image (4).png", width=120, height=120, fit=ft.ImageFit.CONTAIN),
+                            ft.Text("THREATVIPER", size=30, weight="bold", color="white"),
+                            ft.Text("SECURITY", size=20, weight="w300", color="cyan400"),
                             ft.Text(DISCLAIMER_MSG, size=11, color="orange300", text_align="center", italic=True),
                             ft.Container(height=10),
                             email_field,
@@ -153,7 +158,7 @@ def main(page: ft.Page):
     def register_view():
         if "/register" in cached_views: return cached_views["/register"]
         name_field = ft.TextField(label="Full Name", prefix_icon="person", border_radius=10)
-        email_field = ft.TextField(label="Username", prefix_icon="person", border_radius=10) # ADAPTATION: Label -> Username
+        email_field = ft.TextField(label="Email Address", prefix_icon="email", border_radius=10)
         pass_field = ft.TextField(label="Password", prefix_icon="lock", password=True, can_reveal_password=True, border_radius=10)
         terms_checkbox = ft.Checkbox(label="I agree to the Terms & Conditions", value=False)
         
@@ -231,25 +236,46 @@ def main(page: ft.Page):
         def perform_scan():
             nonlocal scan_running
             # ADAPTATION: Use Windows paths or user home
-            user_home = os.path.expanduser("~")
-            
-            # Detect all available drives for Manual Scan (C:\, F:\, etc.)
-            drives = []
-            import string
-            for letter in string.ascii_uppercase:
-                root = f"{letter}:\\"
-                # Check if drive exists
-                if os.path.exists(root):
-                    drives.append(root)
+            # ADAPTATION: Platform-specific paths
+            if page.platform == ft.Platform.ANDROID:
+                # Android Paths (Internal Storage)
+                # Note: Requires permissions for some paths.
+                user_home = "/storage/emulated/0"
+                paths = [
+                    os.path.join(user_home, "Download"),
+                    os.path.join(user_home, "Documents"),
+                    os.path.join(user_home, "Pictures"),
+                    os.path.join(user_home, "DCIM"),
+                    os.path.join(user_home, "Music"),
+                    os.path.join(user_home, "Movies"),
+                    # Social Media Paths (Common locations)
+                    os.path.join(user_home, "Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Documents"),
+                    os.path.join(user_home, "WhatsApp/Media/WhatsApp Documents"),
+                    os.path.join(user_home, "Telegram/Telegram Documents"),
+                    os.path.join(user_home, "Android/data/org.telegram.messenger/files/Telegram/Telegram Documents")
+                ]
+                all_files = []
+            else:
+                # Windows/Desktop Paths
+                user_home = os.path.expanduser("~")
+                
+                # Detect all available drives for Manual Scan (C:\, F:\, etc.)
+                drives = []
+                import string
+                for letter in string.ascii_uppercase:
+                    root = f"{letter}:\\"
+                    # Check if drive exists
+                    if os.path.exists(root):
+                        drives.append(root)
 
-            paths = [
-                os.path.join(user_home, "Downloads"),
-                os.path.join(user_home, "Desktop"),
-                os.path.join(user_home, "Documents"),
-                os.path.join(user_home, "Pictures"),
-                os.path.join(os.getenv('TEMP'), '') if os.getenv('TEMP') else "C:\\Temp"
-            ] + drives # CRITICAL: Scan the roots of F:\, C:\ etc. to catch user placed files
-            all_files = []
+                paths = [
+                    os.path.join(user_home, "Downloads"),
+                    os.path.join(user_home, "Desktop"),
+                    os.path.join(user_home, "Documents"),
+                    os.path.join(user_home, "Pictures"),
+                    os.path.join(os.getenv('TEMP'), '') if os.getenv('TEMP') else "C:\\Temp"
+                ] + drives 
+                all_files = []
             
             # Dangerous Extensions only (Protect User Data)
             # REMOVED .dll to reduce file count (User Request for optimization).
@@ -279,8 +305,8 @@ def main(page: ft.Page):
                         dirs[:] = [d for d in dirs if d.lower() not in skip_dirs]
                         
                         for f in files:
-                            # 1. Skip CyberNova itself
-                            if "cybernova" in f.lower(): continue
+                            # 1. Skip ThreatViper itself
+                            if "threatviper" in f.lower(): continue
                             # 2. Skip already locked files
                             if f.endswith(".locked"): continue
                             # 3. STRICT EXTENSION FILTER
@@ -316,8 +342,11 @@ def main(page: ft.Page):
             threats_found = 0
             details_log = []
             
-            # PERFORMANCE: Increased workers from 10 to 50 for faster scanning
-            with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+            # PERFORMANCE: Adaptive Threading
+            # Android CPUs can't handle 50 threads comfortably.
+            worker_count = 10 if page.platform == ft.Platform.ANDROID else 50
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=worker_count) as executor:
                 # ADAPTATION: Submit only filepath
                 futures = {executor.submit(threat_engine.scan_file, fp): fp for fp in all_files}
                 for future in concurrent.futures.as_completed(futures):
@@ -370,24 +399,36 @@ def main(page: ft.Page):
                 page.open(ft.SnackBar(ft.Text("Defense Disabled"), bgcolor="red400"))
 
         def shield_monitor():
-            # ADAPTATION: Monitor ALL Drives + User Folders (Max Coverage)
-            user_home = os.path.expanduser("~")
-            
-            # Detect all available drives (C:\, D:\, E:\, etc.)
-            drives = []
-            import string
-            for letter in string.ascii_uppercase:
-                root = f"{letter}:\\"
-                if os.path.exists(root):
-                    drives.append(root)
+            # ADAPTATION: Monitor Paths based on Platform
+            if page.platform == ft.Platform.ANDROID:
+                 user_home = "/storage/emulated/0"
+                 monitored_paths = [
+                    os.path.join(user_home, "Download"),
+                    os.path.join(user_home, "Documents"),
+                    os.path.join(user_home, "Pictures"),
+                    # Social Media Real-time Paths
+                    os.path.join(user_home, "Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Documents"),
+                    os.path.join(user_home, "WhatsApp/Media/WhatsApp Documents"),
+                    os.path.join(user_home, "Telegram/Telegram Documents"),
+                 ]
+            else:
+                user_home = os.path.expanduser("~")
+                
+                # Detect all available drives (C:\, D:\, E:\, etc.)
+                drives = []
+                import string
+                for letter in string.ascii_uppercase:
+                    root = f"{letter}:\\"
+                    if os.path.exists(root):
+                        drives.append(root)
 
-            monitored_paths = [
-                os.path.join(user_home, "Downloads"),
-                os.path.join(user_home, "Desktop"),
-                os.path.join(user_home, "Documents"),
-                os.path.join(user_home, "Pictures"),
-                os.getcwd() # Monitor the App folder itself (for testing)
-            ] + drives # Add C:\, F:\, etc. to the list
+                monitored_paths = [
+                    os.path.join(user_home, "Downloads"),
+                    os.path.join(user_home, "Desktop"),
+                    os.path.join(user_home, "Documents"),
+                    os.path.join(user_home, "Pictures"),
+                    os.getcwd() # Monitor the App folder itself (for testing)
+                ] + drives # Add C:\, F:\, etc. to the list
             
             dangerous_exts = ('.exe', '.msi', '.apk', '.bat', '.ps1', '.vbs', '.scr', '.com')
             
@@ -400,7 +441,7 @@ def main(page: ft.Page):
                         current = set(os.listdir(p))
                         new_files = current - last_state[p]
                         for nf in new_files:
-                            if "cybernova" in nf.lower(): continue
+                            if "threatviper" in nf.lower(): continue
                             if nf.endswith(".locked"): continue
                             if not nf.lower().endswith(dangerous_exts): continue
                             
@@ -449,19 +490,21 @@ def main(page: ft.Page):
                 
                 # ACTIVE REMEDIATION: Handle "File in Use" / Running Virus
                 if "used by another process" in str(e) or "WinError 32" in str(e):
-                    print(f"⚠️ Threat is RUNNING! Attempting to kill: {filename}")
-                    try:
-                        # Force kill the process by name
-                        import subprocess
-                        subprocess.run(f'taskkill /F /IM "{filename}"', shell=True, timeout=3)
-                        time.sleep(1) # Allow Windows to release the file lock
-                        
-                        # Retrying Quarantine
-                        shutil.move(filepath, dest_path)
-                        print(f"💀 Process Killed & Quarantined: {filepath}")
-                        return
-                    except Exception as k_err:
-                        print(f"Kill Failed: {k_err}")
+                    # Only attempt taskkill on Windows
+                    if page.platform != ft.Platform.ANDROID:
+                        print(f"⚠️ Threat is RUNNING! Attempting to kill: {filename}")
+                        try:
+                            # Force kill the process by name
+                            import subprocess
+                            subprocess.run(f'taskkill /F /IM "{filename}"', shell=True, timeout=3)
+                            time.sleep(1) # Allow Windows to release the file lock
+                            
+                            # Retrying Quarantine
+                            shutil.move(filepath, dest_path)
+                            print(f"💀 Process Killed & Quarantined: {filepath}")
+                            return
+                        except Exception as k_err:
+                            print(f"Kill Failed: {k_err}")
 
                 # Fallback: In-place rename if folder creation fails
                 try:
@@ -491,7 +534,7 @@ def main(page: ft.Page):
                                 ft.Icon(ft.Icons.SHIELD, size=40, color="green400"),
                                 ft.Column([
                                     ft.Text("STATUS: SECURE", weight="bold", size=16),
-                                    ft.Text("CyberNova Network Active", size=12, color="grey")
+                                    ft.Text("ThreatViper Shield Active", size=12, color="grey")
                                 ])
                             ])
                         ),
@@ -579,17 +622,21 @@ def main(page: ft.Page):
         page.go("/login")
 
     def route_change(route):
+        # We clear the stack for main views to avoid memory leaks and UI freezes
         if page.route == "/login":
             page.views.clear()
             page.views.append(login_view())
         elif page.route == "/register":
+            page.views.clear()
             page.views.append(register_view())
         elif page.route == "/dashboard":
             page.views.clear()
             page.views.append(dashboard_view())
         elif page.route == "/history":
+            # Append sub-views
             page.views.append(history_view())
         elif page.route == "/terms":
+            # Append sub-views
             page.views.append(terms_view())
         page.update()
 

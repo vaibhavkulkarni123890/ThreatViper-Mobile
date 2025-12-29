@@ -1,4 +1,4 @@
-# CyberNova Mobile Security 🛡️
+# ThreatViper Mobile Security 🛡️
 
 **Next-Gen Android Security Application** focused on Real-time Protection and Strict Installation Monitoring.
 
@@ -9,14 +9,14 @@
 ### 1. 🛡️ Real-time Behavior Shield
 - **24/7 Monitoring**: Automatically watches `Downloads`, `Bluetooth`, and `Documents` folders.
 - **Strict APK Policy**: instantly **BLOCKS & QUARANTINES** any unauthorized APK installer using heuristics.
-- **Zero-Trust**: Only allows verified updates matching the `cybernova` signature.
+- **Zero-Trust**: Only allows verified updates matching the `threatviper` signature.
 
 ### 2. 🕵️‍♂️ Smart Scanner
 - **Privacy First**: Scans your file system for hidden threats without uploading your data.
 - **Auto-Quarantine**: Threats are moved to a secure `.quarantine` vault and locked.
 
 ### 3. 🔐 Secure Authentication
-- **Hybrid Cloud**: Syncs accounts to MongoDB Cloud but works 100% Offline via local SQLite.
+- **Secure Cloud**: All scan history and user accounts are stored securely in Appwrite Cloud. No sensitive scan data is stored locally.
 - **Encryption**: Military-grade `bcrypt` password hashing.
 
 ### 4. ⚡ Performance
@@ -36,11 +36,11 @@
 
 ```bash
 # Clone
-git clone https://github.com/YourRepo/CyberNova.git
-cd CyberNova/CyberNovaMobile
+git clone https://github.com/YourRepo/ThreatViper.git
+cd ThreatViper/ThreatViperMobile
 
 # Build
-flet build apk --project cybernova_mobile
+flet build apk --project threatviper_mobile
 ```
 
 ## 📸 Screenshots

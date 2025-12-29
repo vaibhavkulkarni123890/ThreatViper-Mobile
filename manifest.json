@@ -1,6 +1,6 @@
 {
-    "name": "CyberNova Mobile",
-    "short_name": "CyberNova",
+    "name": "ThreatViper Security",
+    "short_name": "ThreatViper",
     "start_url": "/login",
     "display": "standalone",
     "background_color": "#0d1117",

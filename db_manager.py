@@ -43,7 +43,7 @@ class DBManager:
         # Configuration
         self.endpoint = os.getenv("APPWRITE_ENDPOINT", "https://cloud.appwrite.io/v1")
         self.project_id = os.getenv("APPWRITE_PROJECT_ID")
-        self.db_id = os.getenv("APPWRITE_DB_ID", "CyberNova_1234")
+        self.db_id = os.getenv("APPWRITE_DB_ID", "ThreatViper_1234")
         self.collection_history = os.getenv("APPWRITE_COLLECTION_HISTORY", "table_1")
         
         # Absolute path for session persistence (Always near the app)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Final Build Script for CyberNova Networks
+Final Build Script for ThreatViper Security
 Creates a production-ready standalone .exe with bundled assets.
 """
 
@@ -19,7 +19,7 @@ def setup_environment():
 
 def build_executable():
     """Build the standalone EXE using PyInstaller"""
-    print("🏗️ Building CyberNova_Networks.exe...")
+    print("🏗️ Building ThreatViper_Security.exe...")
     
     # Clean previous artifacts
     for folder in ['dist', 'build']:
@@ -34,7 +34,7 @@ def build_executable():
         'pyinstaller',
         '--onefile',
         '--windowed',
-        '--name', 'CyberNova_Networks',
+        '--name', 'ThreatViper_Security',
         '--add-data', assets_flag,
         '--hidden-import', 'appwrite.services.account',
         '--hidden-import', 'appwrite.services.databases',
@@ -52,7 +52,7 @@ def build_executable():
     try:
         subprocess.check_call(cmd)
         print("\n" + "="*50)
-        print("✅ SUCCESS: CyberNova_Networks.exe created in 'dist/' folder.")
+        print("✅ SUCCESS: ThreatViper_Security.exe created in 'dist/' folder.")
         print("="*50)
         
         # Add .env template for the user
@@ -63,7 +63,7 @@ def build_executable():
 
 def create_env_template():
     """Create a template .env in the dist folder for the user"""
-    env_content = """# CyberNova Networks - Configuration
+    env_content = """# ThreatViper Security - Configuration
 # Please fill in your Appwrite details below
 APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
 APPWRITE_PROJECT_ID=your_project_id

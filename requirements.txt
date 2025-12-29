@@ -3,7 +3,9 @@ pymongo
 bcrypt
 certifi
 python-dotenv
-numpy>=1.21.0
-scikit-learn>=1.0.0
 yara-python>=1.7.0
+# pefile is useful for analyzing downloaded EXEs even on Android
 pefile>=2023.2.7
+# numpy and scikit-learn are heavy; ensure they are needed. 
+# Creating a streamlined list for mobile.
+
