@@ -42,7 +42,7 @@ jobs:
           # Leaving flutter-version empty defaults to latest stable
 
       - name: Accept Android Licenses
-        run: yes | sdkmanager --licenses
+        run: yes | flutter doctor --android-licenses
 
       - name: Flet Build APK
         run: |
