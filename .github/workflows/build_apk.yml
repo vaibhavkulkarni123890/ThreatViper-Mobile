@@ -21,15 +21,12 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libssl-dev pkg-config
+          sudo apt-get install -y build-essential libssl-dev pkg-config python3-dev
 
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flet[android] pymongo bcrypt certifi python-dotenv yara-python pefile
-
-      - name: Debug File Structure
-        run: ls -R
+          pip install flet pymongo bcrypt certifi python-dotenv yara-python pefile
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -40,13 +37,13 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'
+          flutter-version: '3.16.0'
           channel: 'stable'
 
       - name: Flet Build APK
         run: |
-          # Ensure we are building the current directory
-          flet build apk --verbose
+          # Use python -m flet to ensure we use the correct environment
+          python -m flet build apk --verbose
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
