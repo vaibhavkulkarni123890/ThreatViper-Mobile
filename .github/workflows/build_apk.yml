@@ -41,6 +41,9 @@ jobs:
           channel: 'stable'
           # Leaving flutter-version empty defaults to latest stable
 
+      - name: Accept Android Licenses
+        run: yes | sdkmanager --licenses
+
       - name: Flet Build APK
         run: |
           # Ensure Flet is in path and build APK
