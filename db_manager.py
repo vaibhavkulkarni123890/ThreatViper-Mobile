@@ -23,8 +23,14 @@ from appwrite.exception import AppwriteException
 from appwrite.query import Query
 from datetime import datetime, timezone
 
-# Helper to find files in EXE vs Source
+# Helper to find files in EXE vs Source vs Android
 def get_base_dir():
+    # If running on Android, use a writable temp/files directory
+    import platform
+    if "android" in platform.uname().release.lower() or os.environ.get("ANDROID_ROOT"):
+        import tempfile
+        return tempfile.gettempdir()
+    
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
     return os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +62,7 @@ class DBManager:
         self.databases = Databases(self.client)
         
         self.current_user = None
-        self.load_session()
+        # DEFERRED: load_session() will be called by main.py or lazily
 
     def _save_session_data(self, cookie_header, secret=None):
         try:
