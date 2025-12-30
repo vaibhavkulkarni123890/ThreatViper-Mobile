@@ -25,11 +25,12 @@ from datetime import datetime, timezone
 
 # Helper to find files in EXE vs Source vs Android
 def get_base_dir():
-    # If running on Android, use a writable temp/files directory
-    import platform
-    if "android" in platform.uname().release.lower() or os.environ.get("ANDROID_ROOT"):
-        import tempfile
-        return tempfile.gettempdir()
+    # Robust check for Android
+    is_android = os.path.exists('/system/bin/app_process') or "ANDROID_ROOT" in os.environ
+    
+    if is_android:
+        # On Android, the home directory is usually the most reliable writable path
+        return os.path.expanduser("~")
     
     if getattr(sys, 'frozen', False):
         return os.path.dirname(sys.executable)
@@ -71,9 +72,13 @@ class DBManager:
                 "secret": secret,
                 "timestamp": time.time()
             }
+            # Ensure the directory exists (it should, but just in case)
+            os.makedirs(os.path.dirname(self.session_file), exist_ok=True)
             with open(self.session_file, "w") as f:
                 json.dump(data, f)
-        except: pass
+        except Exception as e:
+            # On Android, we MUST NOT crash here if storage is weird
+            print(f"Session Save Warning: {e}")
 
     def load_session(self):
         if not os.path.exists(self.session_file):
