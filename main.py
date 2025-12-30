@@ -16,18 +16,8 @@ try:
     logging.getLogger('appwrite').setLevel(logging.CRITICAL)
 except: pass
 
-# Import new modules
-# ADAPTATION: Use our local db_manager shim
-from db_manager import DBManager
-# ADAPTATION: Alias our existing class to the name expected by main.py
-from threat_engine import ThreatEngine
-
-# Configure Logging (Project info masked)
+# Configure Logging
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Initialize Core Systems
-db = DBManager()
-threat_engine = ThreatEngine()
 
 # Legal Text Const - UPDATED FOR COMMERCIAL
 TERMS_TEXT = """
@@ -64,7 +54,49 @@ def main(page: ft.Page):
     page.window_width = 400
     page.window_height = 800
     page.padding = 0
-    
+
+    # Show Loading Overlay immediately
+    loading_screen = ft.Container(
+        expand=True,
+        bgcolor="#111111",
+        content=ft.Column([
+            ft.ProgressRing(color="cyan400"),
+            ft.Text("Initializing Secure Environment...", color="grey400")
+        ], alignment="center", horizontal_alignment="center")
+    )
+    page.add(loading_screen)
+    page.update()
+
+    # Initialize Core Systems Safely
+    try:
+        global db, threat_engine
+        # Initialize inside main so we don't block the Python process before Flet starts
+        from db_manager import DBManager
+        from threat_engine import ThreatEngine
+        
+        db = DBManager()
+        threat_engine = ThreatEngine()
+        
+        # Load session in background or here (now safe because Flet is drawing)
+        db.load_session()
+        
+    except Exception as e:
+        page.clean()
+        page.add(ft.Container(
+            expand=True, padding=40,
+            content=ft.Column([
+                ft.Icon(ft.Icons.ERROR_OUTLINE, color="red400", size=50),
+                ft.Text("Startup Error", size=20, weight="bold"),
+                ft.Text(f"{str(e)}", color="red300"),
+                ft.ElevatedButton("Retry", on_click=lambda _: main(page))
+            ], horizontal_alignment="center", alignment="center")
+        ))
+        page.update()
+        return
+
+    # Remove loading screen once systems are ready
+    page.clean()
+
     # State & Caching
     scan_running = False
     shield_active = False
@@ -237,7 +269,7 @@ def main(page: ft.Page):
             nonlocal scan_running
             # ADAPTATION: Use Windows paths or user home
             # ADAPTATION: Platform-specific paths
-            if page.platform == ft.Platform.ANDROID:
+            if page.platform == ft.PagePlatform.ANDROID:
                 # Android Paths (Internal Storage)
                 # Note: Requires permissions for some paths.
                 user_home = "/storage/emulated/0"
@@ -344,7 +376,7 @@ def main(page: ft.Page):
             
             # PERFORMANCE: Adaptive Threading
             # Android CPUs can't handle 50 threads comfortably.
-            worker_count = 10 if page.platform == ft.Platform.ANDROID else 50
+            worker_count = 10 if page.platform == ft.PagePlatform.ANDROID else 50
             
             with concurrent.futures.ThreadPoolExecutor(max_workers=worker_count) as executor:
                 # ADAPTATION: Submit only filepath
@@ -400,7 +432,7 @@ def main(page: ft.Page):
 
         def shield_monitor():
             # ADAPTATION: Monitor Paths based on Platform
-            if page.platform == ft.Platform.ANDROID:
+            if page.platform == ft.PagePlatform.ANDROID:
                  user_home = "/storage/emulated/0"
                  monitored_paths = [
                     os.path.join(user_home, "Download"),
@@ -491,7 +523,8 @@ def main(page: ft.Page):
                 # ACTIVE REMEDIATION: Handle "File in Use" / Running Virus
                 if "used by another process" in str(e) or "WinError 32" in str(e):
                     # Only attempt taskkill on Windows
-                    if page.platform != ft.Platform.ANDROID:
+                    if page.platform != ft.PagePlatform.ANDROID:
+
                         print(f"⚠️ Threat is RUNNING! Attempting to kill: {filename}")
                         try:
                             # Force kill the process by name
