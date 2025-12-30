@@ -1,12 +1,8 @@
 flet>=0.21.0
+requests
+appwrite
 pymongo
 bcrypt
 certifi
 python-dotenv
-# yara-python is a binary dependency; commenting out for Android build stability.
-# yara-python>=1.7.0
-# pefile is useful for analyzing downloaded EXEs even on Android
 pefile>=2023.2.7
-# numpy and scikit-learn are heavy; ensure they are needed. 
-# Creating a streamlined list for mobile.
-
