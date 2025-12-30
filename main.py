@@ -61,7 +61,7 @@ def main(page: ft.Page):
         bgcolor="#111111",
         content=ft.Column([
             ft.ProgressRing(color="cyan400"),
-            ft.Text("Initializing Secure Environment...", color="grey400")
+            ft.Text("Initializing Secure Environment...", color="grey400", id="boot_status")
         ], alignment="center", horizontal_alignment="center")
     )
     page.add(loading_screen)
@@ -69,6 +69,10 @@ def main(page: ft.Page):
 
     # Initialize Core Systems Safely
     try:
+        # Step 1: Logic
+        loading_screen.content.controls[1].value = "Loading Threat Engine..."
+        page.update()
+        
         global db, threat_engine
         # Initialize inside main so we don't block the Python process before Flet starts
         from db_manager import DBManager
@@ -77,7 +81,11 @@ def main(page: ft.Page):
         db = DBManager()
         threat_engine = ThreatEngine()
         
-        # Load session in background or here (now safe because Flet is drawing)
+        # Step 2: Session
+        loading_screen.content.controls[1].value = "Restoring Session..."
+        page.update()
+        
+        # Load session is now non-fatal and non-blocking
         db.load_session()
         
     except Exception as e:
@@ -87,14 +95,15 @@ def main(page: ft.Page):
             content=ft.Column([
                 ft.Icon(ft.Icons.ERROR_OUTLINE, color="red400", size=50),
                 ft.Text("Startup Error", size=20, weight="bold"),
-                ft.Text(f"{str(e)}", color="red300"),
+                ft.Text(f"Details: {str(e)}", color="red300"),
+                ft.Text("Check if 'requests' and 'appwrite' are installed.", size=10, color="grey500"),
                 ft.ElevatedButton("Retry", on_click=lambda _: main(page))
             ], horizontal_alignment="center", alignment="center")
         ))
         page.update()
         return
 
-    # Remove loading screen once systems are ready
+    # Final Step: Clear boot UI
     page.clean()
 
     # State & Caching
@@ -164,7 +173,7 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=20,
                         controls=[
-                            ft.Image(src="generated-image (4).png", width=120, height=120, fit=ft.ImageFit.CONTAIN),
+                            ft.Image(src="logo_final.png", width=120, height=120, fit=ft.ImageFit.CONTAIN),
                             ft.Text("THREATVIPER", size=30, weight="bold", color="white"),
                             ft.Text("SECURITY", size=20, weight="w300", color="cyan400"),
                             ft.Text(DISCLAIMER_MSG, size=11, color="orange300", text_align="center", italic=True),
